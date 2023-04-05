@@ -220,7 +220,12 @@
     <!-- Main utility and core function-->
     <script src="version.js"></script>
     <script src="scripts/editor.js"></script>
-    <script src="scripts/card.js" type="module"></script>
+    <script type="module">
+      // pls no inline call
+      import { redrawBg, redrawText } from "./scripts/card.js";
+      window.redrawBg = redrawBg;
+      window.redrawText = redrawText;
+    </script>
     <script src="scripts/exporter.js"></script>
 
     <!-- Text generator from Persona 5 Style Text Gen @lzxhahaha -->

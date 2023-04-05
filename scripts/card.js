@@ -16,7 +16,7 @@ logo.src = "assets/logo.png";
 logo.onload = redrawBg;
 
 // for the card canvas
-function redrawBg() {
+export function redrawBg() {
     // asset calculations
     const logoScale = document.querySelector('#logo-size-option').value;
     const logoOffset = document.querySelector('#logo-offset').value;
@@ -53,7 +53,7 @@ const canvasText = document.getElementById("canvas-text");
 const textCtx = canvasText.getContext('2d');
 let box;
 
-function redrawText() {
+export function redrawText() {
     const delay = Number(document.querySelector('#delay-rate > input[type="number"]').value);
     const fontSize = Math.min(Math.abs(+fontSizeInput.value || 120));
     const fontFamily = fontFamilyInput.value || 'sans-serif';
@@ -83,7 +83,7 @@ function redrawText() {
                 topOffset = 0;
                 middleOffset = ((canvasText.height - fontSize * splitValue.length) / 2.5) - (fontSize / 5 * (splitValue.length));
             }
-    
+            //where the weird white line from ???
             heightOffset += Number(box.draw(lineCanvas) - 40);
     
             textCtx.drawImage(lineCanvas, 0, lineHeight + middleOffset + topOffset);
