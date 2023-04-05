@@ -181,7 +181,7 @@ export class BoxText {
     let isRed = true
     while (width < canvasWidth) {
       ctx.beginPath()
-      ctx.arc(canvasWidth / 2, canvasHeight / 2, width, 0, 360)
+      // ctx.arc(canvasWidth / 2, canvasHeight / 2, width, 0, 360)
       ctx.closePath()
       ctx.fillStyle = isRed ? COLORS.RED : COLORS.BLACK
       isRed = !isRed
@@ -190,5 +190,6 @@ export class BoxText {
     }
 
     ctx.restore()
+    return canvasHeight
   }
 }

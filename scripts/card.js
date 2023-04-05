@@ -83,10 +83,10 @@ export function redrawText() {
                 topOffset = 0;
                 middleOffset = ((canvasText.height - fontSize * splitValue.length) / 2.5) - (fontSize / 5 * (splitValue.length));
             }
-            //where the weird white line from ???
+            //where the weird white line comes from in the origin shrinked draw() ???
             heightOffset += Number(box.draw(lineCanvas) - 40);
     
-            textCtx.drawImage(lineCanvas, 0, lineHeight + middleOffset + topOffset);
+            textCtx.drawImage(lineCanvas, (canvasText.width - lineCanvas.width)/2, lineHeight + middleOffset + topOffset);
     
             lineHeight = Math.floor(heightOffset) || lineHeight;
             console.log(value, lineHeight, middleOffset, heightOffset);
