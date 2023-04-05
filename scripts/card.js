@@ -1,4 +1,5 @@
 // P5CC core functions
+import { BoxText } from './textgen/text.js'
 var canvas = document.getElementById("canvas-card");
 var card = canvas.getContext("2d");
 
