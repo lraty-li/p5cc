@@ -26,7 +26,7 @@ else
   statusMessage = 'Permission was denied 👎, use default fonts';
 
 if(statusMessage != ''){
-  // alert(statusMessage)
+  alert(statusMessage)
 }
 
 let sysFonts = []
