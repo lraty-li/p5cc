@@ -48,6 +48,7 @@ export function getCharSize(
     right = fontSize,
     top = -1,
     bottom = fontSize
+  //TODO 检查是否有中文
   const imageData = ctx.getImageData(0, 0, fontSize, fontSize).data
 
   // 遍历像素找包围盒

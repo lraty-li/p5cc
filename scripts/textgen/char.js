@@ -45,14 +45,16 @@ for (let j in sysFonts) {
 }
 sysFonts = [... new Set(sysFontsFamiles)]
 
-for (var sysFontName of sysFonts) {
-  if (knownZhFonts.includes(sysFontName)) {
-    zhFonts.push(sysFontName)
-  } else {
-    enFonts.push(sysFontName)
-  }
-}
+// for (var sysFontName of sysFonts) {
+//   if (knownZhFonts.includes(sysFontName)) {
+//     zhFonts.push(sysFontName)
+//   } else {
+//     enFonts.push(sysFontName)
+//   }
+// }
 
+zhFonts = sysFonts
+enFonts = sysFonts
 export class COLORS {
   static RED = "#E5191C"
   static WHITE = "#FDFDFD"
@@ -92,10 +94,10 @@ export class BoxChar {
     this.fontFamily = getRdmOneFromList(enFonts) //TODO
     // this.fontFamily = fontFamily
 
-    if (CheckChinese(char)) {
-      this.fontFamily = getRdmOneFromList(zhFonts)
-      // console.log(this.fontFamily)
-    }
+    // if (CheckChinese(char)) {
+    //   this.fontFamily = getRdmOneFromList(zhFonts)
+    //   // console.log(this.fontFamily)
+    // }
 
     if (mode == CHAR_MODE.SPACE) {
       return
@@ -125,6 +127,8 @@ export class BoxChar {
     this.height = height
     this.top = top
     this.left = left
+
+    this.fontSize = this.fontSize * (Math.random() * 0.5 + 0.5)
   }
 
   get font() {
@@ -145,13 +149,13 @@ export class BoxChar {
 
   get outterSize() {
     const { width, height } = this.rotateSize
-    const scale =
-      this.mode == CHAR_MODE.FIRST
-        ? BoxChar.BorderScale
-        : BoxChar.BackgroundScale
+    // const scale =
+    //   this.mode == CHAR_MODE.FIRST
+    //     ? BoxChar.BorderScale
+    //     : BoxChar.BackgroundScale
     return {
-      width: width * scale,
-      height: height * scale
+      width: width * 1.2,
+      height: height * 1.2
     }
   }
 }

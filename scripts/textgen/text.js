@@ -86,7 +86,7 @@ export class BoxText {
       }
     }
 
-   
+
   }
 
   draw(canvas) {
@@ -167,9 +167,9 @@ export class BoxText {
         drawOffset += boxChar.outterSize.width + gutter
       } else {
         const { width: bgWidth, height: bgHeight } = boxChar.outterSize
-        
+
         const rotateX = drawOffset + bgWidth / 2,
-        rotateY = pendding + bgHeight / 2
+          rotateY = pendding + bgHeight / 2
         canvasRotate(ctx, angle + 1, rotateX, rotateY)
         ctx.fillStyle = COLORSM.get(getRdmOneFromList(BGCOLORS.get(colorName)))
         // ctx.fillRect(
@@ -180,30 +180,17 @@ export class BoxText {
         //   )
         ctx.drawImage(charImgBg.getRndOne(), drawOffset, (canvasHeight - bgHeight) / 2, bgWidth, bgHeight)
 
-        let textLeft = drawOffset + (bgWidth - width) / 2 - left,
+        let textLeft = drawOffset + ((bgWidth - width) / 2 - left),
           textTop = (canvasHeight - height) / 2 - top
         canvasRotate(ctx, -1, rotateX, rotateY)
         ctx.fillStyle = color
-        const fontSizePattern = /[0-9]+px/
-        var sizes = boxChar.font.match(fontSizePattern);
-        if (sizes.length > 0) {
-          const randomFactor = Math.random() * 0.5 + 0.5;
-          const oriSize = parseInt(sizes[0].slice(0, -2))
-          const size = oriSize * randomFactor
-          const offsetOri = (oriSize - size) / 3
-          const rndOffsetX = offsetOri * randomFactor;
-          const rndOffsetY = offsetOri * randomFactor;
-          if (Math.random() > 0.5) {
-            textLeft = textLeft + (Math.random() > 0.5 ? rndOffsetX : -rndOffsetX)
-            textTop = textTop + (Math.random() > 0.5 ? rndOffsetY : -rndOffsetY)
-          }
-          ctx.font = boxChar.font.replace(fontSizePattern, `${size}px`)
-          // console.log(boxChar.font, size, randomFactor,)
 
-        } else {
-
-          ctx.font = boxChar.font
-        }
+        ctx.font = boxChar.font
+        //BUG
+        //忘 bold 89.33420571354931px Let's go Digital
+        //忘 10px sans-serif
+        // console.log(char, boxChar.font)
+        // console.log(char, ctx.font)
 
         ctx.fillText(char, textLeft, textTop)
 
