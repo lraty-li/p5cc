@@ -1,7 +1,48 @@
 // import * as _ from "./utils.js"
-import { BoxChar,  CHAR_MODE, COLORS } from "./char.js"
-import { canvasRotate, getCanvasAndContext } from "./utils.js";
+import { BoxChar, CHAR_MODE, COLORS } from "./char.js"
+import { canvasRotate, getCanvasAndContext, getRdmOneFromList, COLORSM, FONTCOLORS, BGCOLORS } from "./utils.js";
 
+
+class charImgBgs {
+  folderRoot = `${window.location.href}scripts/textgen/char_background_img/`
+  imgCount = 3
+  imgs = []
+  loaded = new Array(this.imgCount).fill(0)
+  constructor() {
+    document.drawReady = false;
+    document.addEventListener('char_bgImg_loaded', function (e) {
+      document.drawReady = true;
+      console.log(document.drawReady)
+    }, false);
+
+    for (let index = 0; index < this.imgCount; index++) {
+      let img = new Image()
+      img.src = this.folderRoot + `${index}.jpg`
+      img.onload = () => {
+        this.loaded[index] = 1;
+        //check if all loaded
+        for (const iterator of this.loaded) {
+          if (iterator != 1) {
+            return
+          }
+        }
+        var event = new CustomEvent('char_bgImg_loaded');
+        document.dispatchEvent(event);
+
+      }
+      this.imgs.push(img)
+    }
+  }
+
+  getRndOne() {
+    return getRdmOneFromList(this.imgs)
+  }
+}
+
+
+
+
+let charImgBg = new charImgBgs();
 export class BoxText {
   chars = []
   fontSize = 60
@@ -44,9 +85,15 @@ export class BoxText {
         )
       }
     }
+
+   
   }
 
   draw(canvas) {
+    if (!document.drawReady) {
+      console.log(document.drawReady)
+      return;
+    }
     const ctx = canvas.getContext("2d")
     if (!ctx) {
       throw new Error("Failed to create canvas")
@@ -84,7 +131,11 @@ export class BoxText {
       ctx.save()
       let { char, top, left, width, height, angle, mode, color } = boxChar
 
-      if (mode == CHAR_MODE.FIRST) {
+      let colorName = color
+      color = COLORSM.get(colorName)
+
+      // if (mode == CHAR_MODE.FIRST) {
+      if (false) {
         const { width: borderWidth, height: borderHeight } = boxChar.outterSize
         const rotateX = drawOffset + borderWidth / 2,
           rotateY = pendding + borderHeight / 2
@@ -116,23 +167,44 @@ export class BoxText {
         drawOffset += boxChar.outterSize.width + gutter
       } else {
         const { width: bgWidth, height: bgHeight } = boxChar.outterSize
-
+        
         const rotateX = drawOffset + bgWidth / 2,
-          rotateY = pendding + bgHeight / 2
+        rotateY = pendding + bgHeight / 2
         canvasRotate(ctx, angle + 1, rotateX, rotateY)
-        ctx.fillStyle = COLORS.BLACK
-        ctx.fillRect(
-          drawOffset,
-          (canvasHeight - bgHeight) / 2,
-          bgWidth,
-          bgHeight
-        )
+        ctx.fillStyle = COLORSM.get(getRdmOneFromList(BGCOLORS.get(colorName)))
+        // ctx.fillRect(
+        //   drawOffset,
+        //   (canvasHeight - bgHeight) / 2,
+        //   bgWidth,
+        //   bgHeight
+        //   )
+        ctx.drawImage(charImgBg.getRndOne(), drawOffset, (canvasHeight - bgHeight) / 2, bgWidth, bgHeight)
 
-        const textLeft = drawOffset + (bgWidth - width) / 2 - left,
+        let textLeft = drawOffset + (bgWidth - width) / 2 - left,
           textTop = (canvasHeight - height) / 2 - top
         canvasRotate(ctx, -1, rotateX, rotateY)
         ctx.fillStyle = color
-        ctx.font = boxChar.font
+        const fontSizePattern = /[0-9]+px/
+        var sizes = boxChar.font.match(fontSizePattern);
+        if (sizes.length > 0) {
+          const randomFactor = Math.random() * 0.5 + 0.5;
+          const oriSize = parseInt(sizes[0].slice(0, -2))
+          const size = oriSize * randomFactor
+          const offsetOri = (oriSize - size) / 3
+          const rndOffsetX = offsetOri * randomFactor;
+          const rndOffsetY = offsetOri * randomFactor;
+          if (Math.random() > 0.5) {
+            textLeft = textLeft + (Math.random() > 0.5 ? rndOffsetX : -rndOffsetX)
+            textTop = textTop + (Math.random() > 0.5 ? rndOffsetY : -rndOffsetY)
+          }
+          ctx.font = boxChar.font.replace(fontSizePattern, `${size}px`)
+          // console.log(boxChar.font, size, randomFactor,)
+
+        } else {
+
+          ctx.font = boxChar.font
+        }
+
         ctx.fillText(char, textLeft, textTop)
 
         drawOffset += boxChar.outterSize.width + gutter
@@ -153,16 +225,17 @@ export class BoxText {
           continue
         }
 
-        const a = imageData.data[index + 3]
-        for (let x = i - coreSize + 1; x < i + coreSize; ++x) {
-          for (let y = j - coreSize + 1; y < j + coreSize; ++y) {
-            const newIndex = x * imageData.width * 4 + y * 4
-            newImageData.data[newIndex] = 255
-            newImageData.data[newIndex + 1] = 255
-            newImageData.data[newIndex + 2] = 255
-            newImageData.data[newIndex + 3] += a / 4
-          }
-        }
+        //disable background
+        // const a = imageData.data[index + 3]
+        // for (let x = i - coreSize + 1; x < i + coreSize; ++x) {
+        //   for (let y = j - coreSize + 1; y < j + coreSize; ++y) {
+        //     const newIndex = x * imageData.width * 4 + y * 4
+        //     newImageData.data[newIndex] = 255
+        //     newImageData.data[newIndex + 1] = 255
+        //     newImageData.data[newIndex + 2] = 255
+        //     newImageData.data[newIndex + 3] += a / 4
+        //   }
+        // }
       }
     }
 

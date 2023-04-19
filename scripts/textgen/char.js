@@ -1,7 +1,57 @@
 // import * as _ from "./utils"
-import { randomOp, getCharSize } from "./utils.js";
+import { randomOp, getCharSize, getRdmOneFromList, CheckChinese, FONTCOLORS } from "./utils.js";
+import { knownZhFonts } from "./zh_fonts.js";
 
+let queryFontBtn = document.getElementById('queryFont')
+queryFontBtn.addEventListener("click", async () => {
+  await self.queryLocalFonts();
+}, false);
+
+let fontQueryPermission = false
 const MAX_ANGLE = 10
+// const sfnt = await temp1[0].blob();
+// A = new FontFace('test', await sfnt.arrayBuffer())
+
+//[...new Set(arr)] 
+// request font
+// console.log(await queryLocalFonts());
+// https://font-access-api.glitch.me/
+const status = await navigator.permissions.query({ name: "local-fonts" });
+let statusMessage = ''
+if (status.state === "granted")
+  fontQueryPermission = true;
+else if (status.state === "prompt")
+  statusMessage = 'click "Query Font" to acquire font permission';
+else
+  statusMessage = 'Permission was denied 👎, use default fonts';
+
+if(statusMessage != ''){
+  // alert(statusMessage)
+}
+
+let sysFonts = []
+if(fontQueryPermission){
+   sysFonts = await self.queryLocalFonts();
+  console.log(sysFonts)
+}
+let zhFonts = []
+let enFonts = []
+if (sysFonts.length == 0) {
+  sysFonts.push('sans-serif') //TODO default font
+}
+let sysFontsFamiles = []
+for (let j in sysFonts) {
+  sysFontsFamiles.push(sysFonts[j].family)
+}
+sysFonts = [... new Set(sysFontsFamiles)]
+
+for (var sysFontName of sysFonts) {
+  if (knownZhFonts.includes(sysFontName)) {
+    zhFonts.push(sysFontName)
+  } else {
+    enFonts.push(sysFontName)
+  }
+}
 
 export class COLORS {
   static RED = "#E5191C"
@@ -9,12 +59,16 @@ export class COLORS {
   static BLACK = "#0F0F0F"
 }
 
+
+
 export class CHAR_MODE {
   static FIRST = 1
   static WHITE = 2
   static RED = 3
   static SPACE = 4
 }
+
+
 
 export class BoxChar {
   static BorderScale = 1.4
@@ -30,12 +84,18 @@ export class BoxChar {
   angle = 0
   scale = 0
   mode = CHAR_MODE.WHITE
-  color = COLORS.WHITE
+  color = getRdmOneFromList(FONTCOLORS)
 
   constructor(char, mode, fontSize = 60, fontFamily = "sans-serif") {
     this.char = char
     this.mode = mode
-    this.fontFamily = fontFamily
+    this.fontFamily = getRdmOneFromList(enFonts) //TODO
+    // this.fontFamily = fontFamily
+
+    if (CheckChinese(char)) {
+      this.fontFamily = getRdmOneFromList(zhFonts)
+      // console.log(this.fontFamily)
+    }
 
     if (mode == CHAR_MODE.SPACE) {
       return
@@ -51,9 +111,9 @@ export class BoxChar {
     }
     this.fontSize = fontSize * this.scale
 
-    if (mode == CHAR_MODE.RED) {
-      this.color = COLORS.RED
-    }
+    // if (mode == CHAR_MODE.RED) {
+    //   this.color = COLORS.RED
+    // }
 
     const { width, height, top, left } = getCharSize(
       char,

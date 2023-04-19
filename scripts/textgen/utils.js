@@ -1,3 +1,23 @@
+
+export const COLORSM = new Map([
+  ['RED', '#E5191C'],
+  ['WHITE', '#FDFDFD'],
+  ['BLACK', '#0F0F0F'],
+  ['GRAY', '#696969'],
+  ['GRAY1', '#CACBCA'],
+]);
+
+export const FONTCOLORS = [
+  // 'WHITE', 
+  'BLACK',
+]
+
+export const BGCOLORS = new Map([
+  ['RED', ['BLACK',]],
+  ['WHITE', ['BLACK',]],
+  ['BLACK', ['WHITE','GRAY1']],
+])
+
 export function getCanvasAndContext(width, height) {
   const canvas = document.createElement("canvas")
   canvas.width = width
@@ -72,4 +92,18 @@ export function canvasRotate(context, angle, x, y) {
   context.translate(x, y)
   context.rotate((Math.PI * angle) / 180)
   context.translate(-x, -y)
+}
+
+
+export function getRdmOneFromList(list){
+  return list[getRandomInt(list.length)]
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+export function CheckChinese(str) {
+  var reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
+  return reg.test(str);
 }
